@@ -9,29 +9,7 @@ import './Kanban.scss'
 
 export  default React.createClass({
   componentDidMount(){
-    var myData = "Date	NewYork	SanFrancisco	Austin\n\
-20111001	63.4	62.7	72.2\n\
-20111002	58.0	59.9	67.7\n\
-20111003	53.3	59.1	69.4\n\
-20111004	55.7	58.8	68.0\n\
-20111005	64.2	58.7	72.4\n\
-20111006	58.8	57.0	77.0\n\
-20111007	57.9	56.7	82.3\n\
-20111008	61.8	56.8	78.9\n\
-20111009	69.3	56.7	68.8\n\
-20111010	71.2	60.1	68.7\n\
-20111011	68.7	61.1	70.3\n\
-20111012	61.8	61.5	75.3\n\
-20111013	63.0	64.3	76.6\n\
-20111014	66.9	67.1	66.6\n\
-20111015	61.7	64.6	68.0\n\
-20111016	61.8	61.6	70.6\n\
-20111017	62.8	61.1	71.1\n\
-20111018	60.8	59.2	70.0\n\
-20111019	62.1	58.9	61.6\n\
-20111020	65.1	57.2	57.4\n\
-20111021	55.6	56.4	64.3\n\
-20111022	54.4	60.7	72.4\n";
+
 
     var margin = {
         top: 20,
@@ -42,17 +20,11 @@ export  default React.createClass({
       width = 900 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
-    var parseDate = d3.time.format("%Y%m%d").parse;
-
-    var x = d3.time.scale().range([0, width]);
-
-    var y = d3.scale.linear().range([height, 0]);
-
-    var color = d3.scale.category10();
-
-    var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
+    var parseDate = d3.time.format("%Y%m%d").parse,
+        x = d3.time.scale().range([0, width]),
+        y = d3.scale.linear().range([height, 0]),
+        color = d3.scale.category10(),
+        xAxis = d3.svg.axis().scale(x).orient("bottom");
 
     var yAxis = d3.svg.axis()
       .scale(y)
@@ -67,6 +39,8 @@ export  default React.createClass({
         return y(d.temperature);
       });
 
+
+    //Build svg
     var svg = d3.select(".my-graph").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -75,16 +49,21 @@ export  default React.createClass({
 
 
 
+    var rand = function(b){
+      var a = 0;
+      return Math.floor(Math.random() * b) + a;
+    };
+    //Gen data
+    var data = new Array(100).fill(undefined).map((el, i)=>{
+      i = i || 0.5;
 
-    //var data = d3.tsv.parse(myData);
-    //debugger;
-    var data = new Array(100).fill(undefined).map(el=>{
       //Date	NewYork	SanFrancisco	Austin
+      var data = new Date(1387212490 + (i *24000)) ;
       return {
-        date: '20111009',
-        NewYork: 45.4,
-        SanFrancisco: 34.4,
-        Austin: 34.4
+        date: data.toString(),
+        NewYork: 45.4+rand(10),
+        SanFrancisco: 34.4+rand(10),
+        Austin: 34.4+rand(10)
       }
     });
 
@@ -94,8 +73,10 @@ export  default React.createClass({
     }));
 
     data.forEach(function (d) {
+      debugger;
       d.date = parseDate(d.date);
     });
+
 
     var cities = color.domain().map(function (name) {
       return {
